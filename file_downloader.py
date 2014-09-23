@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 #
-#  file_downloader.py - download the file passed as the first argument, can be easily used as a module for your program
-#
 #  Copyright (c) 2014 Shubham Chaudhary <me@shubhamchaudhary.in>
 #
 #  This program is free software: you can redistribute it and/or modify
@@ -17,9 +15,18 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+''' file_downloader.py - download the file passed as the first argument,
+    can be easily used as a module for your program '''
 
-from __future__ import ( division, absolute_import, print_function, unicode_literals )
-import sys, os, time, tempfile, logging
+from __future__ import (
+        absolute_import,
+        division,
+        print_function,
+        unicode_literals
+        )
+import os
+import sys
+#import time, tempfile, logging
 
 if sys.version_info >= (3,):
     import urllib.request as urllib2
@@ -29,30 +36,31 @@ else:
     import urlparse
 
 
-def download(url,destination='./',desc=None):
+def download(url, destination='./', desc=None):
     ''' download the file passed and
     show detailed description while downloading'''
     try:
         u = urllib2.urlopen(url)
     except ValueError:
-        print(url);
-        print('Url value error');
+        print(url)
+        print('Url value error')
         return
     except:
         raise
 
-    scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
+    #scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
+    (_, _, path, _, _) = urlparse.urlsplit(url)
     filename = os.path.basename(path)
     if not filename:
         filename = 'downloaded.file'
     if desc:
         filename = os.path.join(desc, filename)
     if os.path.isdir(destination):
-        filename = os.path.join(destination, filename);
+        filename = os.path.join(destination, filename)
     if os.path.exists(filename):
         #FIXME: adding suffix if file exists
 #         filename += time.strftime("%y%m%d-%H%M%S.txt");
-        print('File {0} exists'.format(filename));
+        print('File {0} exists'.format(filename))
 
     with open(filename, 'wb') as f:
         meta = u.info()
@@ -79,7 +87,7 @@ def download(url,destination='./',desc=None):
             status += chr(13)
             print(status,)
         print()
-    print('Saved: ',filename);
+    print('Saved: ', filename)
     # return filename
 
 def download_2(url):
@@ -113,14 +121,16 @@ def download_3(url):
 
     f.close()
 
-def download_list(url_list,destination='./',desc=None):
+def download_list(url_list, destination='./', desc=None):
+    ''' download entire list of urls specified in url_list '''
     count = len(url_list)
     for url in url_list:
-        print("{0} files left".format(count));
-        download(url,destination,desc);
+        print("{0} files left".format(count))
+        download(url, destination, desc)
         count -= 1
 
 def main(argv):
+    ''' main function '''
     from optparse import OptionParser
     parser = OptionParser()
     parser.add_option("-r", "--rename", dest="rename",
@@ -131,13 +141,13 @@ def main(argv):
             #TODO: Rename interface?
             download(args[0])
         else:
-            download_list(args);
+            download_list(args)
 
 if __name__ == '__main__':
     try:
-        main(sys.argv);
+        main(sys.argv)
     except KeyboardInterrupt:
         print('\nGracefully exiting, but that is not fair. ',
-              'I was trying to get it for you :(');
+              'I was trying to get it for you :(')
     except:
         raise
