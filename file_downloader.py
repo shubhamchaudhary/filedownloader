@@ -142,6 +142,8 @@ def main(argv):
             download(args[0])
         else:
             download_list(args)
+    else:
+        print('No arguments specified')
 
 if __name__ == '__main__':
     try:
